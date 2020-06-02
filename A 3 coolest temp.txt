@@ -1,0 +1,246 @@
+Title :     Design and develop a distributed application to find the coolest/hottest year from the available weather data. User weather data from the Internet and process it using MapReduce.
+Name:     Devwrat Nevewani
+Roll No:     40
+Batch:     B
+Date: / /19
+=====================================================================================
+student@student-HP-Pro-3330-MT:~$ sudo su hduser
+[sudo] password for student: 
+hduser@student-HP-Pro-3330-MT:/home/student$ cd
+hduser@student-HP-Pro-3330-MT:~$ start-dfs.sh
+19/02/04 15:05:26 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Starting namenodes on [localhost]
+hduser@localhost's password: 
+hduser@localhost's password: localhost: Permission denied, please try again.
+
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hduser-namenode-student-HP-Pro-3330-MT.out
+hduser@localhost's password: 
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hduser-datanode-student-HP-Pro-3330-MT.out
+Starting secondary namenodes [0.0.0.0]
+hduser@0.0.0.0's password: 
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hduser-secondarynamenode-student-HP-Pro-3330-MT.out
+19/02/04 15:06:08 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+hduser@student-HP-Pro-3330-MT:~$ start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /usr/local/hadoop/logs/yarn-hduser-resourcemanager-student-HP-Pro-3330-MT.out
+hduser@localhost's password: 
+localhost: starting nodemanager, logging to /usr/local/hadoop/logs/yarn-hduser-nodemanager-student-HP-Pro-3330-MT.out
+hduser@student-HP-Pro-3330-MT:~$ jps
+3598 Jps
+2627 NameNode
+3157 ResourceManager
+2787 DataNode
+3480 NodeManager
+2994 SecondaryNameNode
+hduser@student-HP-Pro-3330-MT:~$ sudo mkdir Temperature
+[sudo] password for hduser: 
+hduser@student-HP-Pro-3330-MT:~$ ls
+analogs  analyzelog   analyzelogs2  examples.desktop  hadoop-2.6.0.tar.gz     hive                   input2000     Manifest.txt~  Temperature
+analyze  analyzelogs  analyzes      hadoop-2.6.0      hbase-1.4.1-bin.tar.gz  hive-2.1.1-bin.tar.gz  Manifest.txt  Temp           Temprature
+hduser@student-HP-Pro-3330-MT:~$ sudo chmod -R 777 Temperature/
+hduser@student-HP-Pro-3330-MT:~$ sudo chown -R hduser Temperature/
+hduser@student-HP-Pro-3330-MT:~$ cd Temperature/
+hduser@student-HP-Pro-3330-MT:~/Temperature$ pwd
+/home/hduser/Temperature
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls
+hduser@student-HP-Pro-3330-MT:~/Temperature$ sudo cp -R /home/student/Desktop/Ass3/* ./
+cp: cannot stat ‘/home/student/Desktop/Ass3/*’: No such file or directory
+hduser@student-HP-Pro-3330-MT:~/Temperature$ sudo cp -R /Home/student/Desktop/Ass3/* ./
+cp: cannot stat ‘/Home/student/Desktop/Ass3/*’: No such file or directory
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls
+hadoop-mapreduce-example-file.txt  input-dataset  MaxTemperatureDriver.java  MaxTemperatureMapper.java  MaxTemperatureReducer.java
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls-ltr
+ls-ltr: command not found
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls -ltr
+total 20
+-rw-r--r-- 1 student student  384 Jan 19  2018 hadoop-mapreduce-example-file.txt
+-rw-r--r-- 1 student student 1431 Jan 19  2018 MaxTemperatureDriver.java
+-rw-r--r-- 1 student student  942 Jan 19  2018 MaxTemperatureMapper.java
+-rw-r--r-- 1 student student  561 Jan 19  2018 MaxTemperatureReducer.java
+drwx------ 2 student student 4096 Jan 19  2018 input-dataset
+hduser@student-HP-Pro-3330-MT:~/Temperature$ sudo chmod +r *.*
+hduser@student-HP-Pro-3330-MT:~/Temperature$ export CLASSPATH="$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.0.jar:$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-client-common-2.7.0.jar:$HADOOP_HOME/share/hadoop/common/hadoop-common-2.7.0.jar:~/Temperature/MaxMinTemp/*:$HADOOP_HOME/lib/*"
+hduser@student-HP-Pro-3330-MT:~/Temperature$ javac -d . MaxTemperatureMapper.java MaxTemperatureReducer.java MaxTemperatureDriver.javaNote: MaxTemperatureDriver.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+hduser@student-HP-Pro-3330-MT:~/Temperature$ pwd
+/home/hduser/Temperature
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls
+hadoop-mapreduce-example-file.txt  input-dataset  MaxMinTemp  MaxTemperatureDriver.java  MaxTemperatureMapper.java  MaxTemperatureReducer.java
+hduser@student-HP-Pro-3330-MT:~/Temperature$ cd MaxMinTemp/
+hduser@student-HP-Pro-3330-MT:~/Temperature/MaxMinTemp$ ls
+MaxTemperatureDriver.class  MaxTemperatureMapper.class  MaxTemperatureReducer.class
+hduser@student-HP-Pro-3330-MT:~/Temperature/MaxMinTemp$ cd ..
+hduser@student-HP-Pro-3330-MT:~/Temperature$ sudo gedit Manifest.txt
+
+(gedit:4370): Gtk-WARNING **: Calling Inhibit failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
+
+(gedit:4370): Gtk-WARNING **: Calling Inhibit failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
+
+(gedit:4370): Gtk-WARNING **: Calling Inhibit failed: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.gnome.SessionManager was not provided by any .service files
+hduser@student-HP-Pro-3330-MT:~/Temperature$ jar -cfm Temperature.jar Manifest.txt MaxMinTemp/*.class 
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls
+hadoop-mapreduce-example-file.txt  Manifest.txt  MaxTemperatureDriver.java  MaxTemperatureReducer.java
+input-dataset                      MaxMinTemp    MaxTemperatureMapper.java  Temperature.jar
+hduser@student-HP-Pro-3330-MT:~/Temperature$ cd
+hduser@student-HP-Pro-3330-MT:~$ $HADOOP_HOME/bin/hdfs dfs -put /home/hduser/Temperature/input-dataset /
+19/02/04 16:02:42 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+put: Error accessing file:/home/hduser/Temperature/input-dataset
+hduser@student-HP-Pro-3330-MT:~$ cd Temperature/
+hduser@student-HP-Pro-3330-MT:~/Temperature$ ls -ltr
+total 32
+-rw-r--r-- 1 student student  384 Jan 19  2018 hadoop-mapreduce-example-file.txt
+-rw-r--r-- 1 student student 1431 Jan 19  2018 MaxTemperatureDriver.java
+-rw-r--r-- 1 student student  942 Jan 19  2018 MaxTemperatureMapper.java
+-rw-r--r-- 1 student student  561 Jan 19  2018 MaxTemperatureReducer.java
+drwx------ 2 student student 4096 Jan 19  2018 input-dataset
+drwxr-xr-x 2 hduser  hadoop1 4096 Feb  4 15:52 MaxMinTemp
+-rw-r--r-- 1 root    root      44 Feb  4 15:56 Manifest.txt
+-rw-r--r-- 1 hduser  hadoop1 3349 Feb  4 15:58 Temperature.jar
+hduser@student-HP-Pro-3330-MT:~/Temperature$ sudo chmod 777 input-dataset/
+hduser@student-HP-Pro-3330-MT:~/Temperature$ sudo chmod -R 777 input-dataset/
+hduser@student-HP-Pro-3330-MT:~/Temperature$ cd
+hduser@student-HP-Pro-3330-MT:~$ $HADOOP_HOME/bin/hdfs dfs -put /home/hduser/Temperature/input-dataset /
+19/02/04 16:08:07 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+put: `/input-dataset/1901': File exists
+put: `/input-dataset/1902': File exists
+put: `/input-dataset/1903': File exists
+put: `/input-dataset/1904': File exists
+put: `/input-dataset/1905': File exists
+put: `/input-dataset/1906': File exists
+put: `/input-dataset/1907': File exists
+put: `/input-dataset/1908': File exists
+put: `/input-dataset/1909': File exists
+put: `/input-dataset/1910': File exists
+put: `/input-dataset/1911': File exists
+put: `/input-dataset/1912': File exists
+put: `/input-dataset/1913': File exists
+put: `/input-dataset/1914': File exists
+put: `/input-dataset/1915': File exists
+put: `/input-dataset/1916': File exists
+put: `/input-dataset/1917': File exists
+put: `/input-dataset/1918': File exists
+put: `/input-dataset/1919': File exists
+put: `/input-dataset/1920': File exists
+hduser@student-HP-Pro-3330-MT:~$ cd Temperature/
+hduser@student-HP-Pro-3330-MT:~/Temperature$ $HADOOP_HOME/bin/hadoop jar Temperature.jar /input-dataset /output-Temperature
+19/02/04 16:13:17 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+19/02/04 16:13:17 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+19/02/04 16:13:19 WARN mapreduce.JobResourceUploader: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+19/02/04 16:13:21 INFO input.FileInputFormat: Total input paths to process : 20
+19/02/04 16:13:22 INFO mapreduce.JobSubmitter: number of splits:20
+19/02/04 16:13:22 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1549272977816_0001
+19/02/04 16:13:23 INFO impl.YarnClientImpl: Submitted application application_1549272977816_0001
+19/02/04 16:13:24 INFO mapreduce.Job: The url to track the job: http://student-HP-Pro-3330-MT:8088/proxy/application_1549272977816_0001/
+19/02/04 16:13:24 INFO mapreduce.Job: Running job: job_1549272977816_0001
+19/02/04 16:13:44 INFO mapreduce.Job: Job job_1549272977816_0001 running in uber mode : false
+19/02/04 16:13:44 INFO mapreduce.Job:  map 0% reduce 0%
+19/02/04 16:16:12 INFO mapreduce.Job:  map 20% reduce 0%
+19/02/04 16:16:15 INFO mapreduce.Job:  map 22% reduce 0%
+19/02/04 16:16:19 INFO mapreduce.Job:  map 27% reduce 0%
+19/02/04 16:16:20 INFO mapreduce.Job:  map 28% reduce 0%
+19/02/04 16:16:25 INFO mapreduce.Job:  map 30% reduce 0%
+19/02/04 16:18:43 INFO mapreduce.Job:  map 37% reduce 0%
+19/02/04 16:18:46 INFO mapreduce.Job:  map 50% reduce 0%
+19/02/04 16:18:50 INFO mapreduce.Job:  map 52% reduce 0%
+19/02/04 16:18:51 INFO mapreduce.Job:  map 60% reduce 0%
+19/02/04 16:21:39 INFO mapreduce.Job:  map 70% reduce 0%
+19/02/04 16:21:41 INFO mapreduce.Job:  map 73% reduce 0%
+19/02/04 16:21:42 INFO mapreduce.Job:  map 77% reduce 0%
+19/02/04 16:21:45 INFO mapreduce.Job:  map 77% reduce 2%
+19/02/04 16:21:51 INFO mapreduce.Job:  map 83% reduce 2%
+19/02/04 16:21:57 INFO mapreduce.Job:  map 83% reduce 20%
+19/02/04 16:22:02 INFO mapreduce.Job:  map 85% reduce 20%
+19/02/04 16:22:13 INFO mapreduce.Job:  map 85% reduce 28%
+19/02/04 16:24:38 INFO mapreduce.Job:  map 88% reduce 28%
+19/02/04 16:24:43 INFO mapreduce.Job:  map 95% reduce 28%
+19/02/04 16:24:48 INFO mapreduce.Job:  map 97% reduce 28%
+19/02/04 16:24:50 INFO mapreduce.Job:  map 98% reduce 28%
+19/02/04 16:24:51 INFO mapreduce.Job:  map 100% reduce 28%
+19/02/04 16:25:15 INFO mapreduce.Job:  map 100% reduce 30%
+19/02/04 16:25:19 INFO mapreduce.Job:  map 100% reduce 33%
+19/02/04 16:25:30 INFO mapreduce.Job:  map 100% reduce 67%
+19/02/04 16:25:55 INFO mapreduce.Job:  map 100% reduce 100%
+19/02/04 16:26:12 INFO mapreduce.Job: Job job_1549272977816_0001 completed successfully
+19/02/04 16:26:23 INFO mapreduce.Job: Counters: 49
+	File System Counters
+		FILE: Number of bytes read=1567044
+		FILE: Number of bytes written=5538783
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=19632511
+		HDFS: Number of bytes written=180
+		HDFS: Number of read operations=63
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=22
+		Launched reduce tasks=1
+		Data-local map tasks=22
+		Total time spent by all maps in occupied slots (ms)=3477057
+		Total time spent by all reduces in occupied slots (ms)=375625
+		Total time spent by all map tasks (ms)=3477057
+		Total time spent by all reduce tasks (ms)=375625
+		Total vcore-seconds taken by all map tasks=3477057
+		Total vcore-seconds taken by all reduce tasks=375625
+		Total megabyte-seconds taken by all map tasks=3560506368
+		Total megabyte-seconds taken by all reduce tasks=384640000
+	Map-Reduce Framework
+		Map input records=142622
+		Map output records=142458
+		Map output bytes=1282122
+		Map output materialized bytes=1567158
+		Input split bytes=2100
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=20
+		Reduce shuffle bytes=1567158
+		Reduce input records=142458
+		Reduce output records=20
+		Spilled Records=284916
+		Shuffled Maps =20
+		Failed Shuffles=0
+		Merged Map outputs=20
+		GC time elapsed (ms)=370501
+		CPU time spent (ms)=143170
+		Physical memory (bytes) snapshot=3050471424
+		Virtual memory (bytes) snapshot=10314162176
+		Total committed heap usage (bytes)=3543138304
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=19630411
+	File Output Format Counters 
+		Bytes Written=180
+hduser@student-HP-Pro-3330-MT:~/Temperature$ $HADOOP_HOME/bin/hdfs dfs -cat /output-Temperature/part-00000
+19/02/04 16:29:04 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+cat: `/output-Temperature/part-00000': No such file or directory
+hduser@student-HP-Pro-3330-MT:~/Temperature$ $HADOOP_HOME/bin/hdfs dfs -cat /output-Temperature/*
+19/02/04 16:30:26 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+1901	317
+1902	244
+1903	289
+1904	256
+1905	283
+1906	294
+1907	283
+1908	289
+1909	278
+1910	294
+1911	306
+1912	322
+1913	300
+1914	333
+1915	294
+1916	278
+1917	317
+1918	322
+1919	378
+1920	294
+
+

@@ -1,0 +1,151 @@
+******************** ASSIGNMENT NO.:4(A) ******************
+TITLE : Write an application using HBase and HiveQL for flight information system which will 	include
+1) Creating, Dropping, and altering Database tables
+2) Creating an external Hive table to connect to the HBase for Customer Information Table
+3) Load table with data, insert new values and field in the table, Join tables with Hive
+4) Create index on Flight information Table 5) Find the average departure delay per day in 2008
+
+NAME : Kalpesh S.Sonawane
+Roll No.:-55
+BATCH : c
+*******************************************************************/
+
+hbase(main):001:0> list
+TABLE                                                                           
+employee                                                                        
+1 row(s) in 0.2830 seconds
+
+=> ["employee"]
+
+1]To create table cust
+
+hbase(main):002:0> create 'cust','personal','flight'
+0 row(s) in 2.6980 seconds
+
+=> Hbase::Table - cust
+hbase(main):003:0> list
+TABLE                                                                           
+cust                                                                            
+employee                                                                        
+2 row(s) in 0.0090 seconds
+
+=> ["cust", "employee"]
+
+
+2]To put data in table cust and field personal
+
+hbase(main):004:0> put 'cust','c1','personal:name','ANKITA'
+0 row(s) in 0.2110 seconds
+
+hbase(main):005:0> put 'cust','c2','personal:name','PRAJAKTA'
+0 row(s) in 0.0130 seconds
+
+
+3]To display table cust
+hbase(main):006:0> scan 'cust'
+ROW                   COLUMN+CELL                                               
+ c1                   column=personal:name, timestamp=1522474319194, value=ANKITA                                                       
+ c2                   column=personal:name, timestamp=1522474341450, value=PRAJAKTA                                                     
+2 row(s) in 0.0250 seconds
+
+
+4]To view the details of Id 'c1' from table custr
+hbase(main):007:0> get 'cust','c1'
+COLUMN                CELL                                                      
+ personal:name        timestamp=1522474319194, value=ANKITA                    
+1 row(s) in 0.0260 seconds
+
+hbase(main):008:0> put 'cust','c1','flight:ticket','a1'
+0 row(s) in 0.0070 seconds
+
+hbase(main):009:0> put 'cust','c2','flight:ticket','a1'
+0 row(s) in 0.0080 seconds
+
+hbase(main):010:0> scan 'cust'
+ROW                   COLUMN+CELL                                               
+ c1                   column=flight:ticket, timestamp=1522474515388, value=a1   
+ c1                   column=personal:name, timestamp=1522474319194, value=ANKITA                                                        
+ c2                   column=flight:ticket, timestamp=1522474523405, value=a1   
+ c2                   column=personal:name, timestamp=1522474341450, value=PRAJAKTA                                                     
+2 row(s) in 0.0180 seconds
+
+hbase(main):011:0> get 'cust','c1'
+COLUMN                CELL                                                      
+ flight:ticket        timestamp=1522474515388, value=a1                         
+ personal:name        timestamp=1522474319194, value=ANKITA                    
+1 row(s) in 0.0150 seconds
+
+hbase(main):014:0> put 'cust','c1','personal:address','abcd'
+0 row(s) in 0.0100 seconds
+
+hbase(main):017:0> list
+TABLE                                                                           
+cust                                                                            
+employee                                                                        
+2 row(s) in 0.0150 seconds
+
+=> ["cust", "employee"]
+hbase(main):018:0> scan 'cust'
+ROW                   COLUMN+CELL                                               
+ c1                   column=flight:ticket, timestamp=1522474515388, value=a1   
+ c1                   column=personal:address, timestamp=1522475029348, value=abcd                                                        
+ c1                   column=personal:name, timestamp=1522474319194, value=ANKITA                                                        
+ c2                   column=flight:ticket, timestamp=1522474523405, value=a1   
+ c2                   column=personal:name, timestamp=1522474341450, value=PRAJAKTA                                                      
+2 row(s) in 0.0490 seconds
+
+
+5]To fetch data from table cust with column family flight and its attribute ticket of id 'c1'
+
+hbase(main):019:0> get 'cust','c1',{COLUMN=>'flight:ticket'}
+COLUMN                CELL                                                      
+ flight:ticket        timestamp=1522474515388, value=a1                         
+1 row(s) in 0.0230 seconds
+
+hbase(main):019:0> get 'cust','c1',{COLUMN=>'flight:ticket'}
+COLUMN                CELL                                                      
+ flight:ticket        timestamp=1522474515388, value=a1                         
+1 row(s) in 0.0230 seconds
+
+
+6]To create table student with column family academic and cultural
+
+hbase(main):020:0> create 'student','academic','cultural'
+0 row(s) in 2.3490 seconds
+
+=> Hbase::Table - student
+hbase(main):021:0> put 'student','s1','academic:rank','1st'
+0 row(s) in 0.0180 seconds
+
+hbase(main):022:0> put 'student','s2','academic:rank','3rd'
+0 row(s) in 0.0050 seconds
+
+hbase(main):023:0> put 'student','s1','academic:marks','100'
+0 row(s) in 0.0100 seconds
+
+hbase(main):024:0> put 'student','s2','academic:marks','90'
+0 row(s) in 0.0050 seconds
+
+hbase(main):025:0> put 'student','s1','cultural:competition','singing'
+0 row(s) in 0.0120 seconds
+
+hbase(main):026:0> put 'student','s1','cultural:sports','cricket'
+0 row(s) in 0.0050 seconds
+
+hbase(main):027:0> put 'student','s2','cultural:sports','chess'
+0 row(s) in 0.0060 seconds
+
+hbase(main):028:0> put 'student','s2','cultural:competition','dance'
+0 row(s) in 0.0060 seconds
+
+hbase(main):029:0> scan 'student'
+ROW                   COLUMN+CELL                                               
+ s1                   column=academic:marks, timestamp=1522475806323, value=100 
+ s1                   column=academic:rank, timestamp=1522475731298, value=1st  
+ s1                   column=cultural:competition, timestamp=1522475883629, value=singing                                                 
+ s1                   column=cultural:sports, timestamp=1522475898557, value=cricket                                                      
+ s2                   column=academic:marks, timestamp=1522475816957, value=90  
+ s2                   column=academic:rank, timestamp=1522475751717, value=3rd  
+ s2                   column=cultural:competition, timestamp=1522475926154, value=dance                                                   
+ s2                   column=cultural:sports, timestamp=1522475911885, value=chess                                                        
+2 row(s) in 0.0160 seconds

@@ -1,0 +1,340 @@
+ASSIGNMENT NO :B-1
+TITLE :Perform the following operations wsing R on Facebook metric data-sets.
+	1.Create data subsets	
+	2.Merge Data
+	3.Sort Data
+	4.Transposing Data
+	5.Melting Data to long format
+	6.Casting Data to wide format
+NAME: Kalpesh S Sonawane
+CLASS: TEIT
+Roll NO.:58			                      
+BATCH :C
+----------------------------------------------------------------------------------------------------
+
+•	Create data subsets
+(Read data using read.csv)
+
+>fbdata<read.csv(file="/home/student/Desktop/DSBDA_Hadoop_Data/dataset_Facebook.csv", header=T, sep=";")			
+
+> dim(fbdata)
+[1] 500  19
+
+•	Subset using dataset[] with conditions.
+
+> subset(fbdata,fbdata$V3<2)
+ [1] Page.total.likes                                                   
+ [2] Type                                                               
+ [3] Category                                                           
+ [4] Post.Month                                                         
+ [5] Post.Weekday                                                       
+ [6] Post.Hour                                                          
+ [7] Paid                                                               
+<0 rows> (or 0-length row.names)
+
+> fbdata[fbdata$V3<2]
+data frame with 0 columns and 500 rows
+
+
+> fbdata$Post.Hour[fbdata$Post.Hour>2]
+[1]  3 10  3 10  3  9  3  9  3 10 10 10 10  3  5 10  3 12  3 11  3 10 10  3 10  3 11  3  3 11
+ [31] 10  3  9  3 11  3 10  9  3 11  3 10  3 11  3 11 11  9  3  9  3 10 11  3 10  3 11 10  
+> fbdata$Lifetime.Post.Total.Reach[fbdata$Lifetime.Post.Total.Reach>1000]
+
+  [1]   2752  10460   2413  50128   7244  10472  11692  13720  11844   4694  21744   3112   2847
+ [14]   2549  22784  10060   1722  53264   3930   1591   2848   1384   3454   2723   8488   8284
+ [27]  19552   2478   9560  36208   4940   1683   5280   3002   3766   4512   2690  19800  17576
+ [40]   3290  13280  18480   7268   2645   4284   7968  16576   1925   3786   1536 
+
+•	Subset with specific attribute
+
+> fbdata$Paid[fbdata$Paid!=2]
+  [1]  0  0  0  1  0  0  1  1  0  0  0  0  0  0  1  0  0  1  0  0  0  0  0  0  0  0  0  0  0  1
+ [31]  0  0  0  0  0  0  0  1  0  0  0  1  0  1  0  1  0  0  0  0  0  1  0  0  0  1  0  0  0  1
+ [61]  1  1  1  1  0  0  0  1  0  0  1  1  0  1  0  1  0  0  0  0  0  0  0  1  0  1  0  0  0  1
+ [91]  0  0  0  0  0  0  0  0  1  0  1  0  0  0  1  0  0  0  0  0  0  0  0  1  0  1  0  0  0  0
+
+
+•	Subset with specific selection
+
+> subset(fbdata,fbdata$Post.Weekday<2,select=-Post.Month)
+
+ Page.total.likes   Type Category Post.Weekday Post.Hour Paid Lifetime.Post.Total.Reach
+6             139441 Status        2            1         9    0                     10472
+7             139441  Photo        3            1         3    1                     11692
+20            138414  Photo        3            1        11    0                      1591
+21            138414  Photo        2            1         3    0                      2848
+36            138895  Photo        2            1        11    0                      4512
+37            138895  Photo        3            1         3    0                      2690
+
+
+•	Subset with condition
+
+> subset(fbdata,Category <2 & Type =='Link')
+ Page.total.likes Type Category Post.Month Post.Weekday Post.Hour Paid
+23            138414 Link        1         12            7        10    0
+42            138895 Link        1         12            6         3    1
+44            138353 Link        1         12            5         3    1
+
+>fbdata[fbdata$Category<2 | fbdata$Type=='Link',]
+Lifetime.Post.Impressions.by.people.who.have.liked.your.Page
+18                                                         92512
+22                                                          2196
+23                                                          6282
+35	                                                       30131
+35                                                          5782\
+•	MERGE
+
+> t1<-read.table(header = T,text ='ID NAME')
+
+> t1<-read.table(header = T,text ='ID NAME
++  1   ABC
++  2   PQR
++  3   XYZ
++  4   MNO
++  ')
+
+> t1
+  ID NAME
+1  1  ABC
+2  2  PQR
+3  3  XYZ
+4  4  MNO
+
+> t2<-read.table(header = T,text ='ID ENG MATHS ')
+> t2<-read.table(header = T,text ='ID ENG MATHS 
++ 1  80   90
++ 2  73   54
++ 3  60   67
++ 4  50   50 
++ ')
+
+> t2
+  ID ENG MATHS
+1  1  80    90
+2  2  73    54
+3  3  60    67
+4  4  50    50
+
+
+> merge(t1,t2,"ID")
+
+  ID NAME ENG MATHS
+1  1  ABC  80    90
+2  2  PQR  73    54
+3  3  XYZ  60    67
+4  4  MNO  50    50
+
+
+
+> merge(x=t1,y=t2,by='ID',all=T)					//outer join
+  ID NAME ENG MATHS
+1  1  ABC  80    90
+2  2  PQR  73    54
+3  3  XYZ  60    67
+4  4  MNO  50    50
+
+> merge(x=t1,y=t2,by=NULL)					//cross join
+   ID.x NAME ID.y ENG MATHS
+1     1  ABC    1  80    90
+2     2  PQR    1  80    90
+3     3  XYZ    1  80    90
+4     4  MNO    1  80    90
+5     1  ABC    2  73    54
+6     2  PQR    2  73    54
+
+> merge(x=t1,y=t2,by='ID',all=F)
+  ID NAME ENG MATHS
+1  1  ABC  80    90
+2  2  PQR  73    54
+3  3  XYZ  60    67
+4  4  MNO  50    50
+
+> merge(x=t1,y=t2,by='ID',all.y=T)				//displays t2 data 
+  ID NAME ENG MATHS
+1  1  ABC  80    90
+2  2  PQR  73    54
+3  3  XYZ  60    67
+4  4  MNO  50    50
+5  5 <NA>  34   566
+6  6 <NA>  20    20
+
+> merge(x=t1,y=t2,by='ID',all.x=T)			//displays table 1 data
+  ID NAME ENG MATHS
+1  1  ABC  80    90
+2  2  PQR  73    54
+3  3  XYZ  60    67
+4  4  MNO  50    50
+
+
+
+
+
+
+•	SORT
+
+> sort(fbdata$V5)
+  [1] 1            1            1            1            1           
+[86] 2            2            2            2            2               
+[151] 3            3            3            3            3                
+[201] 4            4            4            4            4            
+[271] 5            5            5            5            5           
+ [341] 6            6            6            6            6     
+> sort(t2$ENG)
+[1] 20 34 50 60 73 80
+
+> sort(t2$ENG,decreasing=T)
+[1] 80 73 60 50 34 20
+
+
+> t1[order(t1$NAME),]
+  ID NAME
+1  1  ABC
+4  4  MNO
+2  2  PQR
+3  3  XYZ
+
+> t1[order(t1$ID),]
+  ID NAME
+1  1  ABC
+2  2  PQR
+3  3  XYZ
+4  4  MNO
+
+> t1[order(t1$NAME,decreasing=TRUE),]
+  ID NAME
+3  3  XYZ
+2  2  PQR
+4  4  MNO
+1  1  ABC
+
+
+/*    > t22<-t2					//TO MOVE DATA IN ANOTHER VARIABLE
+> t22
+$ID
+[1] 1 2 3 4 5 6
+
+$ENG
+[1] 80 73 60 50 34 20
+
+$MATHS
+[1]  90  54  67  50 566  20
+
+> t22
+$ID
+[1] 1 2 3 4 5 6
+
+$ENG
+[1] 80 73 60 50 34 20
+
+$MATHS
+[1]  90  54  67  50 566  20
+
+> dim(t22)
+NULL
+> dim(t2)
+NULL
+
+
+
+
+> t4<-data.frame(t22$ID,t22$ENG,t22$MATHS)
+> t4
+  t22.ID t22.ENG t22.MATHS
+1      1      80        90
+2      2      73        54
+3      3      60        67
+4      4      50        50
+5      5      34       566
+6      6      20        20			*/
+
+> t4[order(t4$t22.ENG),]
+  t22.ID t22.ENG t22.MATHS
+6      6      20        20
+5      5      34       566
+4      4      50        50
+3      3      60        67
+2      2      73        54
+1      1      80        90
+
+
+> t4[order(t4$t22.ENG,decreasing=T),]
+  t22.ID t22.ENG t22.MATHS
+1      1      80        90
+2      2      73        54
+3      3      60        67
+4      4      50        50
+5      5      34       566
+6      6      20        20
+
+•	Transpose
+
+> t(t1)						  
+   [,1]  [,2]  [,3]  [,4] 
+ID   "1"   "2"   "3"   "4"  
+NAME "ABC" "PQR" "XYZ" "MNO"
+
+
+> t(t4)	
+          [,1] [,2] [,3] [,4] [,5] [,6]
+t22.ID       1    2    3    4    5    6
+t22.ENG     80   73   60   50   34   20
+t22.MATHS   90   54   67   50  566   20
+
+
+•	Converting data
+
+> data<-read.table(header = T,text ='ID time x1 x2 
++ 1   1   5   6
++ 1   2   3   5
++ 2   1   6   1
++ 2   2   2   4
++ ')
+
+> data
+  ID time x1 x2
+1  1    1  5  6
+2  1    2  3  5
+3  2    1  6  1
+4  2    2  2  4
+
+> x<-data						//copy in another variable
+> x
+  ID time x1 x2
+1  1    1  5  6
+2  1    2  3  5
+3  2    1  6  1
+4  2    2  2  4
+
+•	MELTING  DATA
+
+> data1<-melt(x, id=c("ID","time"))				//wide to long
+> data1
+  ID time variable value
+1  1    1       x1     5
+2  1    2       x1     3
+3  2    1       x1     6
+4  2    2       x1     2
+5  1    1       x2     6
+6  1    2       x2     5
+7  2    1       x2     1
+8  2    2       x2     4
+
+
+•	CASTING DATA
+
+> subjmeans<-dcast(data1,ID~variable,mean)		//long to wide
+> subjmeans
+  ID x1  x2
+1  1  4 5.5
+2  2  4 2.5
+
+
+> timemeans<-dcast(data1,time~variable,mean)		
+> timemeans
+  time  x1  x2
+1    1 5.5 3.5
+2    2 2.5 4.5
+
+
+

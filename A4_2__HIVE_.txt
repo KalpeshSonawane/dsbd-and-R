@@ -1,0 +1,241 @@
+******************** ASSIGNMENT NO.:4(A) ******************
+TITLE : Write an application using HBase and HiveQL for flight information system which will 	include
+1) Creating, Dropping, and altering Database tables
+2) Creating an external Hive table to connect to the HBase for Customer Information Table
+3) Load table with data, insert new values and field in the table, Join tables with Hive
+4) Create index on Flight information Table 5) Find the average departure delay per day in 2008
+
+Name: Kalpesh S. Sonawane
+Roll No.:-55
+BATCH : C
+*******************************************************************/
+
+student@student-HP-Pro-3330-MT:~$ sudo su hduser
+[sudo] password for student: 
+
+hduser@student-HP-Pro-3330-MT:/$ start-dfs.sh
+
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hduser-namenode-student-HP-Pro-3330-MT.out
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hduser-datanode-student-HP-Pro-3330-MT.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hduser-secondarynamenode-student-HP-Pro-3330-MT.out
+
+hduser@student-HP-Pro-3330-MT:/$ start-yarn.sh
+starting yarn daemons
+starting resourcemanager, logging to /usr/local/hadoop/logs/yarn-hduser-resourcemanager-student-HP-Pro-3330-MT.out
+localhost: starting nodemanager, logging to /usr/local/hadoop/logs/yarn-hduser-nodemanager-student-HP-Pro-3330-MT.out
+
+hduser@student-HP-Pro-3330-MT:/$ jps
+2488 DataNode
+3368 Jps
+2731 SecondaryNameNode
+2907 ResourceManager
+3043 NodeManager
+2349 NameNode
+hduser@student-HP-Pro-3330-MT:/$ cd /usr/local/hive/bin
+
+hduser@student-HP-Pro-3330-MT:/usr/local/hive/bin$ ./hive
+
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+
+Logging initialized using configuration in jar:file:/usr/local/hive/lib/hive-common-2.1.1.jar!/hive-log4j2.properties Async: true
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. tez, spark) or using Hive 1.X releases.
+
+
+hive> show databases;
+OK
+default
+Time taken: 0.802 seconds, Fetched: 1 row(s)
+
+1] To create database:-
+hive> create database db1;
+OK
+Time taken: 0.529 seconds
+
+2]To create table
+hive> create table student(sroll int, sname string, marks int);
+OK
+Time taken: 0.407 seconds
+
+3]To drop table
+hive> drop table student;
+OK
+Time taken: 2.156 seconds
+
+4]To create table
+hive> create table student(sroll int, sname string, marks int) row format delimited fields terminated by ',' stored as textfile;
+OK
+Time taken: 0.13 seconds
+
+5]To load contents of file in the table
+hive> load data local inpath '/home/student/Desktop/abcd2.txt' into table student;
+Loading data to table default.student
+OK
+Time taken: 1.693 seconds
+
+6]To display table
+hive> select * from student;
+OK
+1	pranjal	11
+2	jayashree	44
+3	nikita	89
+4	sanjana	23
+Time taken: 1.705 seconds, Fetched: 4 row(s)
+
+
+7]To insert data directly without o[pening file
+
+hive> insert into table student values('5','shweta','99');
+
+Query ID = hduser_20180331131126_1a1ce295-35c1-4ae7-91b7-fb53b112eba0
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1522481124459_0001, Tracking URL = http://student-HP-Pro-3330-MT:8088/proxy/application_1522481124459_0001/
+Kill Command = /usr/local/hadoop/bin/hadoop job  -kill job_1522481124459_0001
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2018-03-31 13:11:54,335 Stage-1 map = 0%,  reduce = 0%
+2018-03-31 13:12:14,739 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.56 sec
+MapReduce Total cumulative CPU time: 1 seconds 560 msec
+Ended Job = job_1522481124459_0001
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to directory hdfs://localhost:9000/user/hive/warehouse/student/.hive-staging_hive_2018-03-31_13-11-26_635_8105336992946746599-1/-ext-10000
+Loading data to table default.student
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 1.56 sec   HDFS Read: 4263 HDFS Write: 83 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 560 msec
+OK
+Time taken: 52.856 seconds
+hive> select * from student;
+OK
+5	shweta	99
+1	pranjal	11
+2	jayashree	44
+3	nikita	89
+4	sanjana	23
+Time taken: 2.606 seconds, Fetched: 5 row(s)
+
+8]To add column
+hive> alter table student add columns(dept string);
+OK
+Time taken: 2.106 seconds
+
+9]To create tablke department
+hive> create table department(id int, name string) clustered by (id) into 2 buckets stored as ORC;
+OK
+Time taken: 0.575 seconds
+
+10]To insert values in department table
+
+hive> insert into table department values('1','IT');
+
+Query ID = hduser_20180331133402_4470ba84-ef91-4592-8159-1ee1d7102542
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 2
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1522481124459_0003, Tracking URL = http://student-HP-Pro-3330-MT:8088/proxy/application_1522481124459_0003/
+Kill Command = /usr/local/hadoop/bin/hadoop job  -kill job_1522481124459_0003
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 2
+2018-03-31 13:34:21,127 Stage-1 map = 0%,  reduce = 0%
+2018-03-31 13:34:33,075 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.88 sec
+2018-03-31 13:34:59,335 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.32 sec
+MapReduce Total cumulative CPU time: 5 seconds 320 msec
+Ended Job = job_1522481124459_0003
+Loading data to table default.department
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 2   Cumulative CPU: 5.32 sec   HDFS Read: 12024 HDFS Write: 400 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 320 msec
+OK
+Time taken: 60.464 seconds
+
+11]join operation
+hive> select d.name, s.sname from department d join student s on(d.id=s.sroll);
+
+Query ID = hduser_20180331133536_1fe642b5-c5e3-48a2-a947-c28331827ed9
+Total jobs = 1
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.4.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+2018-03-31 13:35:52	Starting to launch local task to process map join;	maximum memory = 477364224
+2018-03-31 13:35:54	Dump the side-table for tag: 1 with group count: 5 into file: file:/tmp/hduser/0d8b6adc-d33e-49d3-b1c7-bb274f3b1291/hive_2018-03-31_13-35-36_796_6365722634577012437-1/-local-10004/HashTable-Stage-3/MapJoin-mapfile11--.hashtable
+2018-03-31 13:35:54	Uploaded 1 File to: file:/tmp/hduser/0d8b6adc-d33e-49d3-b1c7-bb274f3b1291/hive_2018-03-31_13-35-36_796_6365722634577012437-1/-local-10004/HashTable-Stage-3/MapJoin-mapfile11--.hashtable (395 bytes)
+2018-03-31 13:35:54	End of local task; Time Taken: 1.942 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1522481124459_0004, Tracking URL = http://student-HP-Pro-3330-MT:8088/proxy/application_1522481124459_0004/
+Kill Command = /usr/local/hadoop/bin/hadoop job  -kill job_1522481124459_0004
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 0
+2018-03-31 13:36:09,026 Stage-3 map = 0%,  reduce = 0%
+2018-03-31 13:36:17,276 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 1.72 sec
+MapReduce Total cumulative CPU time: 1 seconds 720 msec
+Ended Job = job_1522481124459_0004
+MapReduce Jobs Launched: 
+Stage-Stage-3: Map: 1   Cumulative CPU: 1.72 sec   HDFS Read: 6953 HDFS Write: 110 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 720 msec
+OK
+IT	pranjal
+Time taken: 42.661 seconds, Fetched: 1 row(s)
+
+12]creating indexon table student on field marks
+hive> create index idx on table student(marks) as 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler' with deferred rebuild;
+OK
+Time taken: 0.528 seconds
+
+
+13]
+hive> show formatted index on student;
+OK
+idx_name            	tab_name            	col_names           	idx_tab_name        	idx_type            	comment             
+	 	 	 	 	 
+	 	 	 	 	 
+idx                 	student             	marks               	default__student_idx__	compact             	
+Time taken: 0.154 seconds, Fetched: 4 row(s)
+
+
+14] 
+hive> select count(marks), marks from student group by marks;
+
+Query ID = hduser_20180331135641_e286c3cf-1473-4101-a556-9b763b7fc097
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1522481124459_0005, Tracking URL = http://student-HP-Pro-3330-MT:8088/proxy/application_1522481124459_0005/
+Kill Command = /usr/local/hadoop/bin/hadoop job  -kill job_1522481124459_0005
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2018-03-31 13:56:54,343 Stage-1 map = 0%,  reduce = 0%
+2018-03-31 13:57:12,405 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.35 sec
+2018-03-31 13:57:31,231 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 2.75 sec
+MapReduce Total cumulative CPU time: 2 seconds 750 msec
+Ended Job = job_1522481124459_0005
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 2.75 sec   HDFS Read: 8810 HDFS Write: 172 SUCCESS
+Total MapReduce CPU Time Spent: 2 seconds 750 msec
+OK
+1	11
+1	23
+1	44
+1	89
+1	99
+Time taken: 52.877 seconds, Fetched: 5 row(s)
